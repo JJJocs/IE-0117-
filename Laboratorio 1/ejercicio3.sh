@@ -13,7 +13,7 @@ generate_report() {
     # Lógica para manejar los diferentes casos
     if [ -n "$mode" ] && [ -n "$date" ]; then
         echo "Generar informe con errores del modo '$mode' registrados en la fecha '$date':"
-        grep "^$date.*$mode" "$nombreDocumento" | while read -r line; do
+        grep "^$date.*$mode" "$nombreDocumento" | grep "ERROR" | while read -r line; do
             # Formatear el informe con la fecha, hora del error y descripción del error
             error_date=$(echo "$line" | awk '{print $1}')
             error_time=$(echo "$line" | awk '{print $2}')
@@ -24,10 +24,10 @@ generate_report() {
         done
     elif [ -n "$mode" ]; then
         echo "Generar informe con errores del modo '$mode' registrados en todas las fechas:"
-        grep "\[$mode\]" "$nombreDocumento"
+        grep "\[$mode\]" "$nombreDocumento" | grep "ERROR"
     elif [ -n "$date" ]; then
         echo "Generar informe con todos los errores ocurridos en la fecha '$date', independientemente del modo:"
-        grep "^$date" "$nombreDocumento"
+        grep "^$date" "$nombreDocumento" | grep "ERROR"
     else
         echo "No se especificaron opciones para generar el informe."
     fi
@@ -40,6 +40,9 @@ main() {
         case $option in
             h)  # Opción de ayuda
                 print_help
+                if [ "$#" -eq 1 ]; then
+                   exit 0  # Salir después de imprimir el menú de ayuda si no hay más argumentos
+                fi
                 ;;
             m)  # Opción de modo de funcionamiento
                 mode="$OPTARG"
@@ -59,17 +62,19 @@ main() {
     generate_report
 }
 
-#Solicitud de archivo de registro
-echo "Ingresa el nombre del documento donde se ubican los registros"
-read -r nombreDocumento
-if [ -f "$nombreDocumento" ]; then
-  echo "El archivo $nombreDocumento existe."
-  
-else
-  echo "El archivo $nombreDocumento no existe."
-  exit 1
-fi
 
+#Solicitud de archivo de registro
+if [ "$mode" != "h" ]; then
+    echo "Ingresa el nombre del documento donde se ubican los registros"
+    read -r nombreDocumento
+    if [ ! -f "$nombreDocumento" ]; then
+        echo "El archivo $nombreDocumento no existe."
+        exit 1
+    fi
+elif [ "$mode" == "h" ]; then
+     print_help
+
+fi
 # Llamar a la función principal
 main "$@"
 
