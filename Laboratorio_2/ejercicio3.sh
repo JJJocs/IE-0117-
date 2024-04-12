@@ -63,3 +63,25 @@ while [ $contador -lt 10 ]; do
     sleep 0.2
     contador=$((contador+1))
 done
+
+# Script para la gráfica con gnuplot
+cat <<EOM >$archivo_grafica
+set terminal png
+set output "grafico.png"
+
+set xdata time
+set timefmt "%d-%m-%Y %H:%M:%S"
+set format x "%H:%M:%S"
+set ylabel "Uso (%)"
+set title "Uso de CPU y Memoria de $ejecutable"
+
+plot "$archivo_log" using 1:3 title "CPU" with lines, \
+     "$archivo_log" using 1:4 title "Memoria" with lines
+EOM
+
+# Generar gráfica con gnuplot
+gnuplot $archivo_grafica
+
+
+
+
