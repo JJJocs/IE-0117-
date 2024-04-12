@@ -1,13 +1,14 @@
 #!/bin/bash
 ID=$1
 info_proceso=$(ps aux | awk '$2 == "'$ID'" {print $0}')
-nombre_proceso=$(ps aux | awk '$2 == '"$ID"' {print $12}')
+nombre_proceso=$(ps -p $ID -o comm=)
 parent_processID=$(ps -f $ID | awk '$2 == '"$ID"' {print $3}')
 usuario_propietario=$(ps aux | awk '$2 == '"$ID"' {print $1}')
 porcentaje_uso_cpu=$(ps aux | awk '$2 == '"$ID"' {print $3}')
 consumo_memoria=$(ps aux | awk '$2 == '"$ID"' {print $4}')
 estado=$(ps aux | awk '$2 == '"$ID"' {print $8}')
-path=$(lsof | awk '$2 == "'$ID'" {print $12}')
+path=$(sudo readlink /proc/$ID/exe)
+
 
 
 
