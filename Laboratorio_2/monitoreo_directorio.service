@@ -1,0 +1,11 @@
+[Unit]
+Description=Servicio de Monitoreo de Cambios en Directorios
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/home/jocs/UCR/IE-0117-/Laboratorio_2/ejercicio4.sh
+WorkingDirectory=/home/jocs/UCR/IE-0117-
+
+[Install]
+WantedBy=multi-user.target
