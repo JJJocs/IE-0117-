@@ -35,3 +35,4 @@ mostrar_informacion_proceso() {
     echo "Estado (status): $estado"
     echo "Path del ejecutable: $path"
 }
+
