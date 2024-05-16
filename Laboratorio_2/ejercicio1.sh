@@ -33,6 +33,6 @@ mostrar_informacion_proceso() {
     echo "Porcentaje de uso de CPU : $porcentaje_uso_cpu"
     echo "Consumo de memoria: $consumo_memoria"
     echo "Estado (status): $estado"
+    echo "Path del ejecutable: $path"
 }
 
-mostrar_informacion_proceso
